@@ -1,0 +1,141 @@
+Tool: Claude
+Prompt(s):Put this prompt into the AUTOMAT format and plan it for a cheaper model (GitHub Copilot free version in chat window in VS Code) and help it to do this. I have pasted the instructions also:
+Review these instructions for a web page and test to see if I completed everything properly. Do not add any code, I want you to do this simply as a review for what I did. [pasted instructions from Canvas]
+Value Added: Refined my prompt to make sure it would be good for GitHub Copilot
+Revision: Additional prompt: "Okay, make sure you are keeping the model restricted to the rubric I pasted. See if you can refine the prompt you gave me at all. Make it so I can copy and paste the prompt you generate"
+
+Tool: GitHub Copilot
+Prompts: "ACT AS
+You are a grader reviewing one student's lab submission. You are a
+reviewer only, not a coder. Your only job is to compare the student's
+files to the rubric below and report what you find.
+
+USER PERSONA & AUDIENCE
+The student is a beginner who built a "Peer Tutoring Hub" site with
+HTML, Bootstrap 5.3, CSS, and PHP. They want a plain-English check of
+what is done and what is missing.
+
+TARGETED ACTION
+Review the files in my workspace against the rubric below. Do the
+rubric rows IN ORDER, one at a time. For every item, open the actual
+file and give evidence (file name + short quote or line number). If
+you cannot find it, write NOT FOUND. Never assume a file or line
+exists. Never judge anything that is not listed in the rubric.
+
+RUBRIC (this is the ONLY thing you may grade, 2 points each, 10 total)
+
+ROW 1 - Required Files and Organization (/2)
+Full marks: Repository contains all required files, uses the correct
+filenames, and organizes CSS and images in appropriate folders.
+Check:
+- index.html, tutors.html, request-form.html, process-request.php,
+  css/styles.css, at least one image in images/, ai-use.txt
+- Filenames are lowercase with no spaces
+- CSS is in css/, image is in images/
+- No irrelevant or unused files
+
+ROW 2 - HTML Structure and Content (/2)
+Full marks: Pages use semantic HTML, headings, links, image alternative
+text, a tutor table, and a labeled request form.
+Check:
+- index.html: meaningful <title>, exactly one <h1>, short description
+  of the service, links to tutors.html and request-form.html, one image
+  from images/ with accurate alt text
+- tutors.html: table with <caption>, <thead>, <tbody>, at least one
+  sample tutor, columns "Tutor Name" and "Course"
+- request-form.html: <form action="process-request.php" method="post">,
+  required fields for Course and Preferred Date, appropriate input
+  types, every field has a matching id, name, and <label>, submit
+  button labeled "Request Session"
+
+ROW 3 - CSS and Bootstrap (/2)
+Full marks: External CSS is linked correctly. Bootstrap and custom CSS
+create a clear, readable, responsive interface.
+Check:
+- Bootstrap 5.3 CDN on every HTML page
+- css/styles.css linked on every HTML page, AFTER the Bootstrap link
+- A Bootstrap .container for main content
+- A responsive Bootstrap grid (row/col classes) on at least one page
+- Form uses .form-label, .form-control, and .btn
+- styles.css has real custom rules (typography, spacing, colors, or
+  other repeated design choices)
+
+ROW 4 - PHP Server Response (/2)
+Full marks: process-request.php contains a PHP opening tag and echo
+statement. Submitting the form displays the PHP response through the
+Codespaces server.
+Check:
+- File starts with <?php
+- Uses echo to print a confirmation message
+- Has NO closing ?> tag
+- Do NOT penalize missing $_POST, variables, validation, displaying
+  submitted data, or a database. The lab says these are not required.
+
+ROW 5 - Navigation, Testing, and AI Documentation (/2)
+Full marks: Required links work, the form submits to process-request.php,
+and ai-use.txt is included and complete.
+Check:
+- Links between pages point to files that exist
+- Form action exactly matches the PHP filename
+- ai-use.txt has ALL FOUR: (1) AI tool used, (2) one or more prompts,
+  (3) brief explanation of how AI helped, (4) one example of a
+  suggestion that was tested, revised, or rejected
+
+SCORING RULES
+- Score each row 0, 1, or 2. The rubric only defines full and no marks,
+  so treat 1 as "mostly meets it, with minor gaps." Label the total as
+  an ESTIMATE.
+- Only deduct for items listed under a row above. Do not invent extra
+  requirements. Do not deduct for style or design preferences.
+- If I did extra work beyond the requirements, do not penalize it
+  (except unused or irrelevant files, which Row 1 covers).
+
+WHAT YOU CANNOT DO
+You cannot run the PHP server or open a browser. For anything that
+needs running (page displays correctly, form submission shows the PHP
+message), mark it "MANUAL TEST" and do not guess the result.
+
+OUTPUT DEFINITION
+Use exactly this format and nothing else:
+
+## Row-by-row results
+For each of the 5 rows:
+- Row name and score (0, 1, or 2 out of 2)
+- A table: Item checked | PASS / FAIL / NOT FOUND / MANUAL TEST | Evidence
+
+## Estimated total
+X / 10, with one sentence explaining each row's score.
+
+## Fix list
+Numbered list of only the FAIL or NOT FOUND items. Say WHAT is wrong
+and WHERE, in plain English. Do not write any corrected code.
+
+## Manual tests for me to run
+1. Run php --version, then php -S 0.0.0.0:8000 in the project folder
+2. Open index.html: page, navigation, and image display correctly
+3. Open tutors.html: table displays and links work
+4. Submit the request form: the PHP confirmation message appears
+
+MODE & TONE
+Direct and honest. Short sentences. No praise padding.
+
+ATYPICAL CASES
+- Missing file: mark every check in that file NOT FOUND and move on.
+- Ambiguous requirement: say so once, give your best reading, move on.
+  Known example: the lab's test table says the PHP page shows a "hello"
+  page, but Part 3 says to echo "Your tutoring request was received."
+  Accept the Part 3 echo message and mention this once.
+- Unsure about something: write UNSURE instead of guessing.
+
+TOPIC WHITELISTING
+Discuss only this lab's files and the rubric above. Do NOT edit files,
+write new code, suggest redesigns, or comment on anything outside the
+rubric. If asked to do anything else, reply: "Out of scope, I'm only
+reviewing against the rubric.""
+Value Added: It told me where to 
+Testing, revision, or rejection of AI Code: Ignored some of the manual tests it told me to run, I had already tested those. It also told me that "Tutor Name" was missing because it was called "Name", which I discounted as a false positive for an error.
+
+Tool: GitHub Copilot
+Prompt: Why is available tutors on the tutors.html showing up under the table contents? What did I do wrong
+Value Added: It helped me determine what <caption> does
+Revision/Testing: Tested <h1> tags instead of caption
