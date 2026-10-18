@@ -1,5 +1,7 @@
 <?php
 
+
+
 // Lab 2B: PHP Functions and Basic Objects
 
 echo '<h1>Lab 2B: Functions and Objects</h1>';
@@ -9,10 +11,18 @@ echo '<h2>1. Function with Parameters and Return Value</h2>';
 
 function formatName($first, $middle, $last)
 {
+    $first = ucfirst(strtolower($first));
+    $middle = ucfirst(strtolower($middle));
+    $last = ucfirst(strtolower($last));
+
+    return $first . ' ' . $middle . ' ' . $last;
+
     // TODO: Clean the capitalization of each name.
     // TODO: Return the complete name as one string.
 }
 
+$displayName = formatName('mARIA', 'lee', 'CHEN');
+echo $displayName;
 // TODO: Call formatName() using sample data.
 
 // 2. Function That Returns an Array
@@ -20,8 +30,16 @@ echo '<h2>2. Function That Returns an Array</h2>';
 
 function cleanNameParts($first, $middle, $last)
 {
+    return [
+       ucfirst(strtolower($first)),
+       ucfirst(strtolower($middle)),
+       ucfirst(strtolower($last))
+    ];
     // TODO: Return an array containing the cleaned name parts.
 }
+
+$nameParts = cleanNameParts('mARIA', 'lee', 'CHEN');
+echo $nameParts[0]; //Maria
 
 // TODO: Call cleanNameParts() and display one item from the array.
 
@@ -35,14 +53,21 @@ function buildFullName()
 {
     // TODO: Use the global keyword to access $first and $last.
     // Return the complete name.
+    global $first, $last;
+    return "$first $last";
 }
 
+echo buildFullName();
+echo "<br>";
 // TODO: Call buildFullName() and display the result.
 
 function buildFullName2($first, $last)
 {
     // TODO: Return the complete name using the parameters.
+    return "$first $last";
 }
+
+echo buildFullName2($first, $last);
 
 // TODO: Call buildFullName2() and display the result.
 
@@ -53,7 +78,14 @@ function nextTicketNumber()
 {
     // TODO: Use a static variable so this function returns
     // 1 on its first call, 2 on its second call, and so on.
+    static $number = 0;
+    $number++;
+    return $number;
+
 }
+
+echo nextTicketNumber(); //1
+echo nextTicketNumber(); //2
 
 // TODO: Call the function at least twice.
 
@@ -65,8 +97,18 @@ class User
     public $name;
     public $email;
 
+    public function display(){
+        return 'User: ' . $this->name;
+    }
+
     // TODO: Create a display() method that returns the user's name.
 }
+
+$user = new User();
+$user->name= 'Maria Chen';
+$user->email = 'maria@example.com';
+
+echo $user->display();
 
 // TODO: Create a User object.
 // TODO: Assign a name and email.
@@ -80,8 +122,19 @@ class User2
     public $name;
     private $passwordHash;
 
+    public function __construct($name, $password)
+    {
+        $this->name = $name;
+        $this->passwordHash =
+            password_hash($password, PASSWORD_DEFAULT);
+    }
+
     // TODO: Create a constructor that receives a name and password.
     // Store the name and create a password hash using password_hash().
 }
+
+$user = new User2('Maria Chen', 'temporary-password');
+print_r($user);
+echo '<br>';
 
 // TODO: Create one User2 object and display it using print_r().
