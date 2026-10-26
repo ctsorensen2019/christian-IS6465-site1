@@ -13,10 +13,10 @@ $topic = trim($_POST["topic"] ?? "");
 $preferredTime = $_POST["preferredtime"] ?? "";
 $preferredDate = $_POST["preferreddate"] ?? "";
 
-echo "<br>Course: $course\n<br>";
-echo "Topic: $topic\n<br>";
-echo "Preferred Time: $preferredTime\n<br>";
-echo "Preferred Date: $preferredDate\n<br>";
+echo "<br>Course: " . htmlspecialchars($course, ENT_QUOTES, "UTF-8") . "\n<br>";
+echo "Topic: " . htmlspecialchars($topic, ENT_QUOTES, "UTF-8") . "\n<br>";
+echo "Preferred Time: " . htmlspecialchars($preferredTime, ENT_QUOTES, "UTF-8") . "\n<br>";
+echo "Preferred Date: " . htmlspecialchars($preferredDate, ENT_QUOTES, "UTF-8") . "\n<br>";
 
 
 
@@ -54,6 +54,8 @@ if (!$errors) {
     echo "<h1>Request received</h1>";
     echo "<p>Course: " . htmlspecialchars($course, ENT_QUOTES, "UTF-8") . "</p>";
     echo "<p>Topic: " . htmlspecialchars($topic, ENT_QUOTES, "UTF-8") . "</p>";
+    echo "<p>Preferred Date: " . htmlspecialchars($preferredDate, ENT_QUOTES, "UTF-8") . "</p>";
+    echo "<p>Preferred Time: " . htmlspecialchars($preferredTime, ENT_QUOTES, "UTF-8") . "</p>";
     echo "<p>Status: Pending review</p>";
 }
 
