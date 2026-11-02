@@ -1,3 +1,5 @@
+Link to repo: https://github.com/ctsorensen2019/christian-IS6465-site1/tree/main/lab4
+
 **Part 1:**
 After I submit the form, a simple confirmation page is displayed that lists out the details I put in the fields of the form.
 Screenshot in the GitHub repository listed as "valid-submission-screenshot-part-1.png" in the "lab4" folder.
