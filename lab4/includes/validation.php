@@ -36,3 +36,4 @@ function validateReason(string $reason): string
 
     return "";
 }
+
