@@ -69,3 +69,5 @@ foreach ($reasonTests as $test) {
     echo $passed ? 'PASS' : 'FAIL';
     echo '</p>';
 }
+
+/* All 10 passed */
