@@ -160,9 +160,13 @@ You should use a WHERE caluse to make sure you delete the correct record.
 
 
 1. How does the database preserve the connection between a student and that student's requests?
+It preserves the data across sessions, so that it is retained even if the connection is closed.
 
 2. Which database constraint prevents two student rows from using the same email address?
+The "UNIQUE" mark on student_email at creation of the table.
 
 3. What could happen if an UPDATE or DELETE statement did not include a WHERE clause?
+Whole tables could be deleted or updated without a WHERE clause.
 
 4. When the application later receives values from an HTML form, why should PHP send those values as parameters instead of placing them directly into SQL text?
+It is a safer way to communicate with the database, and will help prevent SQL injection.
