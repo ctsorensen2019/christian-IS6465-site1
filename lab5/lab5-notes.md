@@ -156,8 +156,7 @@ You should use a WHERE caluse to make sure you delete the correct record.
 |   **Create**	  |         CREATE TABLE students (student_id INTEGER PRIMARY KEY,student_name TEXT NOT NULL,student_email TEXT NOT NULL UNIQUE);                      |             Creating the request table              |
 |   **Read**	  |         SELECT r.request_id, s.student_name, s.student_email, r.course, r.topic, r.preferred_date, r.preferred_time, r.status FROM tutoring_requests AS r JOIN students AS s ON r.student_id = s.student_id ORDER BY r.preferred_date;                       |     Collecting all the requests by student who requested them.                      |		
 | **Update**	  |           UPDATE tutoring_requests SET topic = 'PHP arrays and forms - updated', preferred_date = '2026-10-12', preferred_time = '15:00' WHERE request_id = 1;                     |         Updating the topic for a tutoring request when a student sends more information.                  |		
-| **Delete**	  |         DELETE from tutoring_requests
-WHERE request_id=4;                       |            A student submitted a request by error.               |		
+| **Delete**	  |         DELETE from tutoring_requests WHERE request_id=4;                       |            A student submitted a request by error.               |		
 
 
 1. How does the database preserve the connection between a student and that student's requests?
