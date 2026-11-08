@@ -21,7 +21,6 @@ CREATE TABLE tutoring_requests (
 .tables:
 students           tutoring_requests
 
-@ctsorensen2019 ➜ /workspaces/christian-IS6465-site1/lab5 (main ✗) $ 
 
 2. Which column is the primary key in each table?
 students= student_id; tutoring_requests=request_id
