@@ -1,3 +1,4 @@
+-- Part 1: Create tables
 CREATE TABLE if not exists students (
   student_id INTEGER PRIMARY KEY,
   student_name TEXT NOT NULL,
@@ -16,6 +17,7 @@ CREATE TABLE if not exists tutoring_requests (
   FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
 
+-- Part 2: Insert students and tutoring requests
 INSERT OR ignore INTO students (student_name, student_email)
 VALUES ('Jordan Lee', 'jordan.lee@example.edu');
 INSERT OR ignore INTO students (student_name, student_email)
@@ -37,10 +39,16 @@ INSERT OR ignore INTO tutoring_requests
 VALUES
   (2, 'IS 6465', 'SQLite CRUD', '2026-11-15', '14:00');
 
+
+-- Part 3: Read data
+
 select * from students;
 select * from tutoring_requests;
-/*
- SELECT
+
+select * from tutoring_requests WHERE status = 'OPEN';
+select * from tutoring_requests where request_id=1;
+
+SELECT
   r.request_id,
   s.student_name,
   s.student_email,
@@ -50,6 +58,10 @@ FROM tutoring_requests AS r
 JOIN students AS s ON r.student_id = s.student_id
 ORDER BY r.preferred_date;
 
+
+-- Part 4: Update 1 request
+select * from tutoring_requests;
+
 UPDATE tutoring_requests
 SET topic = 'PHP arrays and forms - updated',
     preferred_date = '2026-10-12',
@@ -58,14 +70,22 @@ WHERE request_id = 1;
 
 select * from tutoring_requests;
 
-DELETE from tutoring_requests
-WHERE request_id = 2;
-
-select * from tutoring_requests;
-
 UPDATE tutoring_requests
 SET status = 'Cancelled'
-WHERE request_id = 1;
+WHERE request_id = 3;
 
 select * from tutoring_requests;
-*/
+
+-- Part 5: Delete 1 request
+INSERT OR ignore INTO tutoring_requests
+  (student_id, course, topic, preferred_date, preferred_time)
+VALUES
+  (2, 'IS 6465', 'Test Record', '2026-11-15', '14:00');
+
+select * from tutoring_requests;
+
+
+DELETE from tutoring_requests
+WHERE request_id=4;
+
+select * from tutoring_requests;
