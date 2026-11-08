@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 //incoming data from the form
-$course = trim($_POST["course"] ?? "");
+$request = trim($_POST["course"] ?? "");
 $reason = trim($_POST["reason"] ?? "");
 $preferredTime = $_POST["preferredtime"] ?? "";
 $preferredDate = $_POST["preferreddate"] ?? "";
