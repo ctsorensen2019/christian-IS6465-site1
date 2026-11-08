@@ -54,7 +54,7 @@
 |   Read	  |                                |                           |		
 |   Update	  |                                |                           |		
 |   Delete	  |                                |                           |		
-Then answer these questions:
+
 
 1. How does the database preserve the connection between a student and that student's requests?
 
