@@ -38,30 +38,65 @@
 -tutoring_requests
 8. How does a tutoring request connect to the student who submitted it?
 -Through the foreign key, student_id.
+Write two to four sentences explaining why SQL statements belong in repository files rather than directly in the form page.
+-First and foremost, this is for security. If the user can immediately tell how the database it constructed, they can be an informed attacker. Also it helps with clutter.
 
 **Part 5: Run tests**
-
+Xdebug: [Step Debug] Could not connect to debugging client. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
+PASS UC01 create and Open
+PASS Lab 4 checkbox values preserved
+FAIL Duplicate email reuses student
+FAIL UC02 course and status filter
+PASS Invalid reason rejected
+FAIL Invalid submission writes nothing
+PASS Edit Open request
+PASS Updated reason persisted
+PASS Cancel Open request
+PASS Cancelled row retained
+PASS Second cancellation rejected
+PASS Unrelated request unchanged
+PASS FK enforced
+PASS UC02 empty filter result
+FAILURES: 3
 
 **Part 6: Use AI Skills Pack**
 **Application Builder**
-Prompt:
-Response:
-Evaluation:
+Prompt:Explain how a tutoring request moves from php/request-form.php through PHP, PDO, and SQLite in this project. Identify the responsibility of each file.
+Response: A request travels through the project like this:
+Collect the request: request-form.php renders the form. Submitting it sends a POST to process-request.php. The form fields include student details, course, reason, topics, preferred date, and preferred time.
+Handle the submission: process-request.php accepts only POST submissions from this form, opens the database connection, and calls the request service. On success, it redirects to the new request’s details page.
+Open SQLite through PDO: db.php creates a PDO connection to database/tutoring.db, configures error and fetch behavior, and enables SQLite foreign-key checks.
+Validate and coordinate: requestService.php validates the submitted values, maps the form fields to database fields, and starts a transaction. The reason and selected topics are encoded together as JSON in the database’s single topic column.
+Run database operations: studentPDO.php inserts the student if their email is not already present, then looks them up by email. requestPDO.php uses PDO prepared statements to insert the tutoring request and return its generated ID. The service commits both operations together, or rolls them back if something fails.
+Store and display the result: setup-database.sql defines the students and tutoring_requests tables, including the student foreign key and default Open status. SQLite persists the submitted records in tutoring.db. request-details.php then loads and displays the saved request.
+In short: the form gathers data, PHP routes and validates it, the service coordinates the work, PDO sends prepared SQL statements, and SQLite stores the student and request records.
+Evaluation: Gave a good step by step explanation of how it works behind the scenes.
 **Traceability Auditor**
-Prompt:
-Response:
-Evaluation:
+Prompt:Trace the requirement “a student can submit a tutoring request” through the PHP files, service, repositories, SQLite tables, and integration tests in this project.
+Response:Request flow
+Form: request-form.php collects the student’s name and email, course, reason, selected topics, preferred date, and preferred time. It posts those values to process-request.php.
+HTTP handling: process-request.php requires a POST and the expected form marker, opens the database connection, and calls submitRequest(). It redirects to the new request’s details page on success; invalid submissions get a 422 response.
+Validation and transaction: requestService.php validates the submitted values, packages the reason and topics as JSON for the topic field, then starts a transaction. It creates or finds the student, inserts the request, and commits; an error rolls back the transaction. validation.php checks allowed topics and times, reason length, and date-related input.
+Repository operations: studentPDO.php inserts a student if their email is new and looks them up by email. requestPDO.php inserts the request with the student’s ID and returns its generated request ID. Both use PDO prepared statements.
+SQLite storage: setup-database.sql defines students and tutoring_requests. Each request references a student through student_id; new requests default to Open. The runtime connection to tutoring.db is configured in db.php.
+Confirmation: request-details.php retrieves the saved request and displays its student, course, details, date, time, and status.
+What the integration tests verify
+integration-tests.php loads the schema into an in-memory SQLite database and exercises the service/repository flow. It checks that a submitted request is created with Open status, topics are preserved, repeat submissions with the same email reuse one student, invalid input writes no request, and the student foreign key is enforced. It tests the database-backed flow rather than simulating a browser POST to the form handler.
+Evaluation:Does a good explanation even though it is a bit wordy. I need to refine the prompt to get a better response.
 | Requirement | Application Page | Service or Validation | Repository or SQL | Database Table | Test Evidence |
 | ----------- | ---------------- | --------------------- | ----------------- | -------------- | ------------- |
-| Student submits a tutoring request |  |  |  |  |  |
+| Student submits a tutoring request | Goes from the request-form.php -> process-request.php | requestService.php and validation.php | studentPDO.php; requestPDO.php; setup-database.sql | students and tutoring_requests | integration-tests.php: verifies request creation with Open status, topic preservation, student reuse by email, invalid-input rejection, and foreign-key enforcement. Also check the folder screenshots/part6-submitted_request.png |
 **Test Harness Generator**
+Prompt:Suggest one useful test case for the Peer Tutoring Hub application. The test must relate to request creation, filtering, editing, cancellation, validation, or database integrity.
+Response:Test case: Reject a past preferred date without writing data. In integration-tests.php, submit a valid request with preferreddate set to yesterday and a new student email. Expect submitRequest() to throw InvalidArgumentException, and verify that neither the student nor the tutoring-request row was added. This checks date validation and ensures invalid submissions leave the database unchanged.
+Evaluation:
 1. Whether it is already covered by tests/integration-tests.php.
--
+-It is not covered by the tests.
 2. How you would test it manually or add it to the integration test file.
--
+-I would test it by adding it to the integration test file since this validation is not already covered.
 3. Whether the AI generated test is appropriate for this application.
--
+-This is definitely appropriate for this application.
 
 **Part 7: Inspect the Database**
 Explain what the JOIN does in this query.
--
+-It connects the student table by its primary key of student_id and the tutoring _requests table by its foreign key of student_id so that data from both tables can be pulled.
