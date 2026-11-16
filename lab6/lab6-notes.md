@@ -27,11 +27,11 @@
 2. Which file receives the submitted form data?
 -process-request.php
 3. Which file opens the PDO connection to SQLite?
--router.php
+-db.php in the config folder.
 4. Which file coordinates validation and the database transaction?
--requests.php
+-requestService.php in the services folder.
 5. Which files contain the SQL statements?
--setup-database.sql
+-studentPDO.php and requestPDO.php in the repositories folder.
 6. Which table stores student information?
 -students
 7. Which table stores tutoring requests?
@@ -39,16 +39,15 @@
 8. How does a tutoring request connect to the student who submitted it?
 -Through the foreign key, student_id.
 Write two to four sentences explaining why SQL statements belong in repository files rather than directly in the form page.
--First and foremost, this is for security. If the user can immediately tell how the database it constructed, they can be an informed attacker. Also it helps with clutter.
+-This allows each layer to do one job, and avoid over complexity. This allows only the repository to need updating instead of each page if there is a change. It also helps with consistency and helps allow for checks without a browser.
 
 **Part 5: Run tests**
-Xdebug: [Step Debug] Could not connect to debugging client. Tried: localhost:9000 (through xdebug.client_host/xdebug.client_port) :-(
 PASS UC01 create and Open
 PASS Lab 4 checkbox values preserved
-FAIL Duplicate email reuses student
-FAIL UC02 course and status filter
+PASS Duplicate email reuses student
+PASS UC02 course and status filter
 PASS Invalid reason rejected
-FAIL Invalid submission writes nothing
+PASS Invalid submission writes nothing
 PASS Edit Open request
 PASS Updated reason persisted
 PASS Cancel Open request
@@ -57,7 +56,9 @@ PASS Second cancellation rejected
 PASS Unrelated request unchanged
 PASS FK enforced
 PASS UC02 empty filter result
-FAILURES: 3
+All integration checks passed
+
+Due to the issues I had with sqlite, I had to use AI to modify the tests page to get it to work. Otherwise, there was 3 tests that failed. This one line fixed it: $pdo->exec('DELETE FROM tutoring_requests; DELETE FROM students;');
 
 **Part 6: Use AI Skills Pack**
 **Application Builder**
@@ -70,7 +71,7 @@ Validate and coordinate: requestService.php validates the submitted values, maps
 Run database operations: studentPDO.php inserts the student if their email is not already present, then looks them up by email. requestPDO.php uses PDO prepared statements to insert the tutoring request and return its generated ID. The service commits both operations together, or rolls them back if something fails.
 Store and display the result: setup-database.sql defines the students and tutoring_requests tables, including the student foreign key and default Open status. SQLite persists the submitted records in tutoring.db. request-details.php then loads and displays the saved request.
 In short: the form gathers data, PHP routes and validates it, the service coordinates the work, PDO sends prepared SQL statements, and SQLite stores the student and request records.
-Evaluation: Gave a good step by step explanation of how it works behind the scenes.
+Evaluation: Gave a good step by step explanation of how it works behind the scenes. I verified that process-request.php redirects to the details page on request.
 **Traceability Auditor**
 Prompt:Trace the requirement “a student can submit a tutoring request” through the PHP files, service, repositories, SQLite tables, and integration tests in this project.
 Response:Request flow
@@ -82,7 +83,7 @@ SQLite storage: setup-database.sql defines students and tutoring_requests. Each 
 Confirmation: request-details.php retrieves the saved request and displays its student, course, details, date, time, and status.
 What the integration tests verify
 integration-tests.php loads the schema into an in-memory SQLite database and exercises the service/repository flow. It checks that a submitted request is created with Open status, topics are preserved, repeat submissions with the same email reuse one student, invalid input writes no request, and the student foreign key is enforced. It tests the database-backed flow rather than simulating a browser POST to the form handler.
-Evaluation:Does a good explanation even though it is a bit wordy. I need to refine the prompt to get a better response.
+Evaluation:Does not do a good explanation even though it is a bit wordy. I need to refine the prompt to get a better response. It said validation.php checks "date-related" input, but it does not.
 | Requirement | Application Page | Service or Validation | Repository or SQL | Database Table | Test Evidence |
 | ----------- | ---------------- | --------------------- | ----------------- | -------------- | ------------- |
 | Student submits a tutoring request | Goes from the request-form.php -> process-request.php | requestService.php and validation.php | studentPDO.php; requestPDO.php; setup-database.sql | students and tutoring_requests | integration-tests.php: verifies request creation with Open status, topic preservation, student reuse by email, invalid-input rejection, and foreign-key enforcement. Also check the folder screenshots/part6-submitted_request.png |
@@ -93,9 +94,22 @@ Evaluation:
 1. Whether it is already covered by tests/integration-tests.php.
 -It is not covered by the tests.
 2. How you would test it manually or add it to the integration test file.
--I would test it by adding it to the integration test file since this validation is not already covered.
+-I would test it by adding it to the integration test file since this validation is not already covered. I used AI to help me do this, but it essentially takes the sample test, converts the string to a time data type, then tries to submit the request, and outputs whether the failure actually happened. If it did, the test passes.
+// Past date should be rejected
+$pastDate = $sample;
+$pastDate['preferreddate'] = date('Y-m-d', strtotime('-1 day'));
+try {
+    submitRequest($pdo, $pastDate);
+    check(false, 'Past date rejected');
+} catch (InvalidArgumentException $e) {
+    check(true, 'Past date rejected');
+}
+$count = (int)$pdo->query('SELECT COUNT(*) FROM tutoring_requests')->fetchColumn();
+check($count === 2, 'Past date adds no request');
 3. Whether the AI generated test is appropriate for this application.
 -This is definitely appropriate for this application.
+Write three to five sentences explaining how the AI tool helped you understand, trace, or test the application. Explain why developers must verify AI generated outputs against actual code and requirements.
+-It read the backend and understood it much faster than I could. Using this, it helped me to verify the path the submissions take and the validations take. It did have an error, which is why just copying and pasting output can be bad since it could have caused issues. It misunderstood the validation.
 
 **Part 7: Inspect the Database**
 Explain what the JOIN does in this query.
