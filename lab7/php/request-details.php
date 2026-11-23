@@ -1,12 +1,19 @@
 <?php
+// Request details. Students may open only their own requests; a request that belongs to
+// someone else gets the same 404 as one that does not exist. Administrators see all.
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../services/requestService.php';
+
+$pdo = openDatabase();
+$user = requireLogin($pdo);
+requireRole($user, array('Student', 'Administrator'));
 $id = filter_input(INPUT_GET, 'request_id', FILTER_VALIDATE_INT);
 if (!$id || $id < 1) {
     http_response_code(400);
     exit('Invalid request ID');
 }
-$r = findRequest(openDatabase(), $id);
+$r = getRequestForActor($pdo, $user, $id);
 if (!$r) {
     http_response_code(404);
     exit('Request not found');

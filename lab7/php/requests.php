@@ -1,27 +1,35 @@
 <?php
+// UC02 list and filter. Students see only their own requests; administrators see all.
+// Tutors have no request workflow (403).
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../services/requestService.php';
-$course = trim((string)($_GET['course'] ?? ''));
-$status = (string)($_GET['status'] ?? '');
-if ($course !== '' && !in_array($course, ['IS 6465', 'IS 6495', 'IS 6570'], true)) {
+
+$pdo = openDatabase();
+$user = requireLogin($pdo);
+requireRole($user, array('Student', 'Administrator'));
+
+$course = trim((string)(isset($_GET['course']) && is_string($_GET['course']) ? $_GET['course'] : ''));
+$status = (string)(isset($_GET['status']) && is_string($_GET['status']) ? $_GET['status'] : '');
+if ($course !== '' && !in_array($course, array('IS 6465', 'IS 6495', 'IS 6570'), true)) {
     http_response_code(400);
     exit('Invalid course');
 }
-if ($status !== '' && !in_array($status, ['Open', 'Cancelled', 'Assigned', 'Completed'], true)) {
+if ($status !== '' && !in_array($status, array('Open', 'Cancelled', 'Assigned', 'Completed'), true)) {
     http_response_code(400);
     exit('Invalid status');
 }
-$rows = listRequests(openDatabase(), $course, $status);
+$rows = listRequestsForActor($pdo, $user, $course, $status);
 require __DIR__ . '/../includes/header.php';
 require __DIR__ . '/../includes/nav.php'; ?>
 <main class="container py-4">
-    <h1>Tutoring requests</h1>
+    <h1><?= $user['role'] === 'Administrator' ? 'Tutoring requests' : 'My tutoring requests' ?></h1>
     <form method="get" class="row g-2 mb-3">
         <div class="col"><select class="form-select" name="course">
-                <option value="">All courses</option><?php foreach (['IS 6465', 'IS 6495', 'IS 6570'] as $c): ?><option value="<?= escapeHtml($c) ?>" <?= $c === $course ? 'selected' : '' ?>><?= escapeHtml($c) ?></option><?php endforeach; ?>
+                <option value="">All courses</option><?php foreach (array('IS 6465', 'IS 6495', 'IS 6570') as $c): ?><option value="<?= escapeHtml($c) ?>" <?= $c === $course ? 'selected' : '' ?>><?= escapeHtml($c) ?></option><?php endforeach; ?>
             </select></div>
         <div class="col"><select class="form-select" name="status">
-                <option value="">All statuses</option><?php foreach (['Open', 'Cancelled', 'Assigned', 'Completed'] as $st): ?><option value="<?= escapeHtml($st) ?>" <?= $st === $status ? 'selected' : '' ?>><?= escapeHtml($st) ?></option><?php endforeach; ?>
+                <option value="">All statuses</option><?php foreach (array('Open', 'Cancelled', 'Assigned', 'Completed') as $st): ?><option value="<?= escapeHtml($st) ?>" <?= $st === $status ? 'selected' : '' ?>><?= escapeHtml($st) ?></option><?php endforeach; ?>
             </select></div>
         <div class="col-auto"><button class="btn btn-primary">Filter</button></div>
     </form>

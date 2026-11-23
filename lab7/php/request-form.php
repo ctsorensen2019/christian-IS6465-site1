@@ -1,4 +1,10 @@
 <?php
+// UC01 form. Lab 7: Students only. Name and email come from the signed-in account and are
+// shown read-only; the server ignores any posted value for them (see submitRequest()).
+require_once __DIR__.'/../config/db.php';
+require_once __DIR__.'/../includes/auth.php';
+$user = requireLogin(openDatabase());
+requireRole($user, array('Student'));
 require_once __DIR__.'/../includes/header.php';
 require_once __DIR__.'/../includes/nav.php';
 ?>
@@ -8,9 +14,10 @@ require_once __DIR__.'/../includes/nav.php';
 
     <form class="tutoring-request-form" action="process-request.php" method="post">
         <input type="hidden" name="form_name" value="tutoring_request">
+        <?= csrfField() ?>
 
-        <div class="form-field"><label for="student_name">Student name</label><input id="student_name" name="student_name" required maxlength="120"></div>
-        <div class="form-field"><label for="student_email">Student email</label><input id="student_email" name="student_email" type="email" required maxlength="254"></div>
+        <div class="form-field"><label for="student_name">Student name</label><input id="student_name" name="student_name" required maxlength="120" value="<?= escapeHtml($user['full_name']) ?>" readonly></div>
+        <div class="form-field"><label for="student_email">Student email</label><input id="student_email" name="student_email" type="email" required maxlength="254" value="<?= escapeHtml($user['email']) ?>" readonly></div>
         <div class="form-field">
             <label for="course">Course</label>
 
