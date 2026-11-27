@@ -2,6 +2,7 @@
 
 **Name:** Christian Sorensen
 **Codespaces link:** https://github.com/codespaces/orange-rotary-phone-4xvg64p76x43q45
+**GitHub Link:** https://github.com/ctsorensen2019/christian-IS6465-site1/tree/main/lab8
 
 *Note: The template for this md file was created by AI based on the instructions in assignment submission and based off of the files for this week's module.
 ---
