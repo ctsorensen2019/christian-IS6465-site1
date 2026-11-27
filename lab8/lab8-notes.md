@@ -4,7 +4,7 @@
 **Codespaces link:** https://github.com/codespaces/orange-rotary-phone-4xvg64p76x43q45
 **GitHub Link:** https://github.com/ctsorensen2019/christian-IS6465-site1/tree/main/lab8
 
-*Note: The template for this md file was created by AI based on the instructions in assignment submission and based off of the files for this week's module.
+*Note: The template for this md file was created by AI based on the instructions in assignment submission and based off of the files for this week's module. When I cloned the repository, it would not upload to GitHub since it was a clone. You may find that the "peer-tutoring-laravel-demo" folder does not work in the GitHub Link, but the images are located within it.
 ---
 
 ## Part 1: Run the Application
